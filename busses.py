@@ -6,27 +6,28 @@ import dateparser
 import json
 
 
-def main():
+def main(stop_ref):
   #we use the html parser to parse the url content and store it in a variable.
 
-  page_content = get_page_content()
-  busses = get_bus_times(page_content)
-
-
-
+  busses = scrape_bus_date(stop_ref)
 
   for bus in busses:
-    print(bus["bus"], bus["expected"], bus["time"])
+    print("Bus #{} is expected at {} ({})".format(bus["bus"], bus["time"], bus["expected"]))
 
   # print (busses)
   # print(json.dumps([time.isoformat() for time in timedata]))
 
   # In my use case, I want to store the speech data I mentioned earlier.  so in this example, I loop through the paragraphs, and push them into an array so that I can manipulate and do fun stuff with the data.
 
-def handler():
-  page_content = get_page_content()
+def handler(stop_ref):
+  busses = scrape_bus_date(stop_ref)
+
+  return json.dumps(busses, indent=4, sort_keys=True, default=str);
+
+def scrape_bus_date(stop_ref):
+  page_content = get_page_content(stop_ref)
   busses = get_bus_times(page_content)
-  print(json.dumps(busses, indent=4, sort_keys=True, default=str))
+  return busses
 
 def get_bus_times(page_content):
   table = page_content.find_all("tr")
@@ -53,10 +54,12 @@ def get_bus_times(page_content):
 
   return busses
 
-def get_page_content():
-  page_link = 'http://metrobus.acisconnect.com/text/WebDisplay.aspx?stopRef=4400CY0086&stopName=Fleming+Way+West'
+def get_page_content(stop_ref = "4400CY0086"):
+
+  page_link = 'http://metrobus.acisconnect.com/text/WebDisplay.aspx?stopRef={}'.format(stop_ref)
 
   page_response = requests.get(page_link, timeout=5)
+
   # here, we fetch the content from the url, using the requests library
   page_content = BeautifulSoup(page_response.content, "html.parser")
 
@@ -64,5 +67,6 @@ def get_page_content():
 
 
 if __name__ == "__main__":
-    main()
-    # handler()
+    stop_ref = "4400CY0086";
+    main(stop_ref)
+    # handler(stop_ref)
