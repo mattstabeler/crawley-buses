@@ -9,9 +9,17 @@ import json
 def main(stop_ref):
   #we use the html parser to parse the url content and store it in a variable.
 
-  buses = scrape_bus_date(stop_ref)
+  stop_ref100 = '4400CY0605';
+  buses10 = scrape_bus_data(stop_ref)
 
-  for bus in buses:
+  print('Stop #{}'.format(stop_ref))
+  for bus in buses10:
+    print("Bus #{} is expected at {} ({})".format(bus["bus"], bus["time"], bus["expected"]))
+
+  print('Stop #{}'.format(stop_ref100))
+
+  buses100 = scrape_bus_data(stop_ref100)
+  for bus in buses100:
     print("Bus #{} is expected at {} ({})".format(bus["bus"], bus["time"], bus["expected"]))
 
   # print (buses)
@@ -20,11 +28,11 @@ def main(stop_ref):
   # In my use case, I want to store the speech data I mentioned earlier.  so in this example, I loop through the paragraphs, and push them into an array so that I can manipulate and do fun stuff with the data.
 
 def handler(stop_ref):
-  buses = scrape_bus_date(stop_ref)
+  buses = scrape_bus_data(stop_ref)
 
   return json.dumps(buses, indent=4, sort_keys=True, default=str);
 
-def scrape_bus_date(stop_ref):
+def scrape_bus_data(stop_ref):
   page_content = get_page_content(stop_ref)
   buses = get_bus_times(page_content)
   return buses
