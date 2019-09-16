@@ -9,7 +9,8 @@ import json
 def main(stop_ref):
   #we use the html parser to parse the url content and store it in a variable.
 
-  stop_ref100 = '4400CY0605';
+  # stop_ref100 = '4400CY0605';
+  stop_ref100 = '4400CY0428';
   buses10 = scrape_bus_data(stop_ref)
 
   print('Stop #{}'.format(stop_ref))
